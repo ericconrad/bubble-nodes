@@ -2,7 +2,7 @@
   "devDependencies": {
     "path": "~0.4.9",
     "jshint-stylish": "~0.1.5",
-    "gulp-ruby-sass": "~0.3.0",
+    "gulp-ruby-sass": "^0.4.3",
     "gulp-util": "~2.2.14",
     "gulp-notify": "~0.6.2",
     "gulp": "~3.5.2",
