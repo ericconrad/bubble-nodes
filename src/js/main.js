@@ -72,12 +72,13 @@ $(function () {
   function hangOut () {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     var svgNS = svg.namespaceURI;
-    var wrapper = $(".bubble-wrapper");
+    var wrapper = document.getElementById("bubble-wrapper");
 
     $.each(bubbleCoordinates, function (i, banana) {
       $.each(banana.homies, function (j, homie) {
 
         var line = document.createElementNS(svgNS,'line');
+        line.setAttribute("id", "line-" + j);
         line.setAttribute("x1", banana.origCoords.x);
         line.setAttribute("y1", banana.origCoords.y);
         line.setAttribute("x2", bubbleCoordinates[homie].origCoords.x);
@@ -85,7 +86,7 @@ $(function () {
         line.setAttribute("stroke", "black");
         line.setAttribute("stroke-width", "2");
         svg.appendChild(line);
-        document.getElementById('bubble-wrapper').appendChild(svg);
+        wrapper.appendChild(svg);
       });
     });
   }
@@ -93,58 +94,66 @@ $(function () {
   hangOut();
 
   var superFloat = function () {
+    var randoTime = "";
+    var setRandoTime = function () { randoTime = ((Math.random() * 2500) + 2500); };
+    setRandoTime();
 
-    // setInterval(function () {
+    $.each(bubbleCoordinates, function (i, location) {
+      bubbleCoordinates[i].newCoords.x = (parseFloat(bubbleCoordinates[i].origCoords.x) + ((Math.random() * 10) -5)) + "%";
+      bubbleCoordinates[i].newCoords.y = (parseFloat(bubbleCoordinates[i].origCoords.y) + ((Math.random() * 10) -5)) + "%";
+      setRandoTime();
+      // console.log(randoTime);
 
-      $.each(bubbleCoordinates, function (i, location) {
-        bubbleCoordinates[i].newCoords.x = (parseFloat(bubbleCoordinates[i].origCoords.x) + ((Math.random() * 10) -5)) + "%";
-        bubbleCoordinates[i].newCoords.y = (parseFloat(bubbleCoordinates[i].origCoords.y) + ((Math.random() * 10) -5)) + "%";
+      function animateBubbles (bubble, speed) {
+        $(bubble).animate(
+          {
+            "top": bubbleCoordinates[i].newCoords.y,
+            "left": bubbleCoordinates[i].newCoords.x
+          },{
+            duration: speed
+          }
+        );
+      }
 
-        function animateBubbles (bubble, speed) {
-          $(bubble).animate(
+      animateBubbles($(".bubble")[i], randoTime);
+
+      $.each(location.homies, function (k, homie) {
+        // line.setAttribute("x1", location.origCoords.x);
+        // line.setAttribute("y1", location.origCoords.y);
+        // line.setAttribute("x2", bubbleCoordinates[homie].origCoords.x);
+        // line.setAttribute("y2", bubbleCoordinates[homie].origCoords.y);
+        // line.setAttribute("stroke", "black");
+        // line.setAttribute("stroke-width", "2");
+        // svg.appendChild(line);
+        // document.getElementById('bubble-wrapper').appendChild(svg);
+
+        function animateLines (line, speed) {
+          console.log(document.getElementsByTagName("line"));
+
+          // document.getElementsByTagName("line")[i].setAttribute("x1", location.newCoords.x);
+          // document.getElementsByTagName("line")[i].setAttribute("y1", location.newCoords.y);
+          // document.getElementsByTagName("line")[i].setAttribute("x2", bubbleCoordinates[homie].newCoords.x);
+          // document.getElementsByTagName("line")[i].setAttribute("y2", bubbleCoordinates[homie].newCoords.y);
+          // console.log(homie);
+          // console.log(line[k]);
+          $(line).animate(
             {
-              "top": bubbleCoordinates[i].newCoords.y,
-              "left": bubbleCoordinates[i].newCoords.x
+              "x1": bubbleCoordinates[k].newCoords.x,
+              "y1": bubbleCoordinates[k].newCoords.y,
+              "x2": bubbleCoordinates[homie].newCoords.x,
+              "y2": bubbleCoordinates[homie].newCoords.y
             },{
               duration: speed
             }
           );
         }
 
-        animateBubbles($(".bubble")[i], 5000);
-
-        $.each(location.homies, function (k, homie) {
-          // line.setAttribute("x1", location.origCoords.x);
-          // line.setAttribute("y1", location.origCoords.y);
-          // line.setAttribute("x2", bubbleCoordinates[homie].origCoords.x);
-          // line.setAttribute("y2", bubbleCoordinates[homie].origCoords.y);
-          // line.setAttribute("stroke", "black");
-          // line.setAttribute("stroke-width", "2");
-          // svg.appendChild(line);
-          // document.getElementById('bubble-wrapper').appendChild(svg);
-
-          function animateLines (line, speed) {
-            console.log($(line));
-            // console.log(homie);
-            // console.log(line[k]);
-            $(line).animate(
-              {
-                "x1": bubbleCoordinates[k].newCoords.x,
-                "y1": bubbleCoordinates[k].newCoords.y,
-                "x2": bubbleCoordinates[homie].newCoords.x,
-                "y2": bubbleCoordinates[homie].newCoords.y
-              },{
-                duration: speed
-              }
-            );
-          }
-
-          animateLines($("line"), 5000);
-        });
-
+        animateLines($("line"), randoTime);
       });
 
-    // }, 3000);
+    });
+
+    setTimeout(superFloat, randoTime);
 
   };
 
